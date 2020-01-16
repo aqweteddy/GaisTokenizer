@@ -3,7 +3,7 @@
 ## install
 
 ```
-pip install git@https://github.com/aqweteddy/GaisTokenizer.git@master
+pip install git+https://github.com/aqweteddy/GaisTokenizer.git@master
 ```
 
 ## Usage
