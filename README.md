@@ -21,10 +21,11 @@ gt = Tokenizer()
 
 ```python
 gt.tokenize('sentence')
+gt.tokenize('sentence', unk_token_idx=True) # return both words, unknown word index
 ```
 
 ### keyword
 
 ```python
-gt.get_words_keywords(text)
+gt.extract_keywords(text)
 ```
