@@ -11,8 +11,8 @@ setup(
     url="",
     license="MIT",
     include_package_data=True,
-    packages=find_packages(include=["src"]),
-    package_dir={"": "src"},
+    packages=find_packages(include=["src/GaisTokenizer"]),
+    package_dir={"": "src/GaisTokenizer"},
     install_requires=requirements
     # scripts=["scripts/test.py"],
 )
