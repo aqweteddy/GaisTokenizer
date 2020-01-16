@@ -12,6 +12,7 @@ setup(
     license="MIT",
     include_package_data=True,
     packages=find_packages(include=["src"]),
+    package_dir={"": "src"},
     install_requires=requirements
     # scripts=["scripts/test.py"],
 )
