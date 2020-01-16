@@ -13,7 +13,8 @@ pip install git+https://github.com/aqweteddy/GaisTokenizer.git@master
 ### __init__
 
 ```python
-gt = GaisTokenizer()
+from GaisTokenizer import Tokenizer
+gt = Tokenizer()
 ```
 
 ### 斷詞
