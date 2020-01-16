@@ -2,10 +2,9 @@ from typing import List, Tuple
 
 import requests
 import logging
-from concurrent.futures import ProcessPoolExecutor
 
 
-class GaisTokenizer:
+class Tokenizer:
     BASE_URL = 'http://gaisdb.ccu.edu.tw:5721/api/segment?content='
 
     def __init__(self, log_level :str='INFO'):

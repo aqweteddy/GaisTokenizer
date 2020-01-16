@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+
 requirements = ['requests']
 
 setup(
@@ -10,7 +11,7 @@ setup(
     url="",
     license="MIT",
     include_package_data=True,
-    packages=find_packages(include=["src","src.*"]),
+    packages=find_packages(include=["src"]),
     install_requires=requirements
     # scripts=["scripts/test.py"],
 )

@@ -1,1 +1,1 @@
-from tokenizer import GaisTokenizer
+from .tokenizer import Tokenizer
