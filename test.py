@@ -1,4 +1,4 @@
-from src.tokenizer import GaisTokenizer
+from GaisTokenizer.tokenizer import GaisTokenizer
 
 gt = GaisTokenizer()
 text = '這裡我們以 GET 下載 Google 的網頁後，將結果儲存於 r 這個變數中，首先確認一下從伺服器傳回的狀態碼：# 伺服器回應的狀態碼'
