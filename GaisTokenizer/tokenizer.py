@@ -1,23 +1,21 @@
 from typing import List, Tuple
 
 import requests
-import logging
-
+from urllib.parse import urlencode
 
 class Tokenizer:
-    BASE_URL = 'http://gaisdb.ccu.edu.tw:5721/api/segment?content='
+    BASE_URL = 'http://gaisdb.ccu.edu.tw:5721/api/segment?'
 
-    def __init__(self, log_level :str='INFO'):
-        self.log = logging.getLogger('GaisTokenizer')
-        self.log.setLevel(logging.getLevelName(log_level))
+    def __init__(self):
         self.tokenize('.')
     
     def __send_request(self, text: str):
-        resp = requests.get(f'{self.BASE_URL}{text}')
+        args = urlencode({'content': text})
+        url = f'{self.BASE_URL}{args}'
+
+        resp = requests.get(quote(url, safe=''))
         if resp.status_code != 200:
-            self.log.error(f'Server Error {resp.status_code}')
-        else:
-            self.log.info(f'OK!')
+            print(f'Server Error {resp.status_code}')
 
         return resp.json()
     
