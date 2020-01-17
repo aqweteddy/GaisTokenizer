@@ -1,4 +1,4 @@
-from GaisTokenizer import Tokenizer
+from gaisTokenizer import Tokenizer
 
 
 gt = Tokenizer()
