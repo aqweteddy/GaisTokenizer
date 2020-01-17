@@ -13,7 +13,7 @@ class Tokenizer:
         args = urlencode({'content': text})
         url = f'{self.BASE_URL}{args}'
 
-        resp = requests.get(quote(url, safe=''))
+        resp = requests.get(url)
         if resp.status_code != 200:
             print(f'Server Error {resp.status_code}')
 
