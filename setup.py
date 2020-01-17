@@ -5,7 +5,7 @@ requirements = ['requests']
 
 setup(
     name="gaisTokenizer",
-    version="0.10",
+    version="0.11",
     description="GaisTokenizer Service Python API",
     author="GAIS LAB & aqweteddy@github",
     url="",
