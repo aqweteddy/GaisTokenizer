@@ -15,7 +15,6 @@ class Tokenizer:
         args = urlencode({'token': self.token, 'content': text}
                          if self.token else {'content': text})
         url = f'{self.BASE_URL}{args}'
-
         resp = requests.get(url)
         if resp.status_code != 200:
             print(f'Server Error {resp.status_code}')
@@ -32,7 +31,7 @@ class Tokenizer:
 
         # remove * and process new word mark
         def unk_filter(word): return word[0] == '*' and len(word) > 1
-        
+
         if unk_token_idx:
             unk_idx = [idx for idx, word in enumerate(
                 result) if unk_filter(word)]
