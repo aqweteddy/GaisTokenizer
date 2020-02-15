@@ -15,6 +15,7 @@ class Tokenizer:
         args = urlencode({'token': self.token, 'content': text}
                          if self.token else {'content': text})
         url = f'{self.BASE_URL}{args}'
+
         resp = requests.get(url)
         if resp.status_code != 200:
             print(f'Server Error {resp.status_code}')
@@ -26,8 +27,13 @@ class Tokenizer:
         text: text to tokenize
         unk_index[bool]: if true, return word not in dictionary
         """
-        result = self.__send_request(text)
-        result = result['recs']
+        pos_start = 0
+        result = []
+        sep_len = 800
+        while len(text[pos_start:]) > sep_len:
+            tmp = self.__send_request(text[pos_start:pos_start+sep_len])
+            result.extend(tmp['recs'])
+            pos_start += sep_len
 
         # remove * and process new word mark
         def unk_filter(word): return word[0] == '*' and len(word) > 1
