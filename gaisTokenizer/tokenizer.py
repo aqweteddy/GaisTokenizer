@@ -15,13 +15,15 @@ class Tokenizer:
         args = urlencode({'token': self.token, 'content': text}
                          if self.token else {'content': text})
         url = f'{self.BASE_URL}{args}'
+        try:
+            resp = requests.get(url)
+            if resp.status_code != 200:
+                print(f'Server Error {resp.status_code}')
 
-        resp = requests.get(url)
-        if resp.status_code != 200:
-            print(f'Server Error {resp.status_code}')
-
-        return resp.json()
-
+            return resp.json()
+        except json.decoder.JSONDecodeError:
+            print(f'JSON Error {resp.status_code}')
+            return ''
     def tokenize(self, text: str, unk_token_idx: bool = False) -> List[str]:
         """
         text: text to tokenize
