@@ -37,6 +37,9 @@ class Tokenizer:
             result.extend(tmp['recs'])
             pos_start += sep_len
 
+        tmp = self.__send_request(text[pos_start:])
+        result.extend(tmp['recs'])
+        
         # remove * and process new word mark
         def unk_filter(word): return word[0] == '*' and len(word) > 1
 
