@@ -24,6 +24,8 @@ class Tokenizer:
         try:
             async with session.get(url) as resp:
                 js = await resp.json()
+                if resp.status != 200:
+                    return None
         except Exception as e:
             # print(resp.status)
             traceback.print_exc()
@@ -46,9 +48,11 @@ class Tokenizer:
             result = await asyncio.gather(*tasks)
         recs, keyterms = [], []
         for r in result:
-            if r:
+            try:
                 recs.extend(r['recs'])
                 keyterms.extend(r['Keyterms'])
+            except Exception:
+                traceback.print_exc()
         
         return recs, keyterms
 
