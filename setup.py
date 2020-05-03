@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-requirements = ['requests']
+requirements = ['aiohttp']
 
 setup(
     name="gaisTokenizer",
