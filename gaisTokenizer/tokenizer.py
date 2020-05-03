@@ -1,46 +1,66 @@
 from typing import List, Tuple
 
-import requests
+import json
+import traceback
+
+import asyncio
+import aiohttp
 from urllib.parse import urlencode
 
 
 class Tokenizer:
     BASE_URL = 'http://gaisdb.ccu.edu.tw:5721/api/segment?'
 
-    def __init__(self, token=None):
+    def __init__(self, token=None, max_cut=100):
         self.token = token
+        self.max_cut = max_cut
+        self.loop = asyncio.get_event_loop()
         self.tokenize('.')
 
-    def __send_request(self, text: str):
+    async def __send_req(self, session, text):
         args = urlencode({'token': self.token, 'content': text}
-                         if self.token else {'content': text})
+                                    if self.token else {'content': text})
         url = f'{self.BASE_URL}{args}'
         try:
-            resp = requests.get(url)
-            if resp.status_code != 200:
-                print(f'Server Error {resp.status_code}')
+            async with session.get(url) as resp:
+                js = await resp.json()
+        except Exception as e:
+            print(resp.status)
+            # traceback.print_exc()
+            return None
+        
+        return js
 
-            return resp.json()
-        except json.decoder.JSONDecodeError:
-            print(f'JSON Error {resp.status_code}')
-            return ''
+    async def __send_request(self, text: str):
+        pos_start = 0
+        tasks = []
+
+        async with aiohttp.ClientSession() as session:
+            while len(text[pos_start:]) > self.max_cut:
+                tasks.append(asyncio.create_task(self.__send_req(session, text[pos_start:pos_start+self.max_cut])))
+                pos_start += self.max_cut
+
+            if text[pos_start:]:
+                tasks.append(asyncio.create_task(self.__send_req(session, text[pos_start:pos_start+self.max_cut])))
+
+            result = await asyncio.gather(*tasks)
+        recs, keyterms = [], []
+        for r in result:
+            if r:
+                recs.extend(r['recs'])
+                keyterms.extend(r['Keyterms'])
+        
+        return recs, keyterms
+
+
     def tokenize(self, text: str, unk_token_idx: bool = False) -> List[str]:
         """
         text: text to tokenize
         unk_index[bool]: if true, return word not in dictionary
         """
-        pos_start = 0
-        result = []
-        sep_len = 800
-        while len(text[pos_start:]) > sep_len:
-            tmp = self.__send_request(text[pos_start:pos_start+sep_len])
-            result.extend(tmp['recs'])
-            pos_start += sep_len
 
-        tmp = self.__send_request(text[pos_start:])
-        result.extend(tmp['recs'])
-        
         # remove * and process new word mark
+        result, _ = self.loop.run_until_complete(self.__send_request(text))
         def unk_filter(word): return word[0] == '*' and len(word) > 1
 
         if unk_token_idx:
@@ -51,12 +71,5 @@ class Tokenizer:
         return (result, unk_idx) if unk_token_idx else result
 
     def extract_keywords(self, text: str) -> List[str]:
-        result = self.__send_request(text)['Keyterms']
-        return [word.strip()for word in result.split(',') if word.strip()]
-
-    def get_words_keywords(self, text: str) -> Tuple[List[str]]:
-        result = self.__send_request(text)
-        words = result['recs']
-        keywords = [word.strip()
-                    for word in result['Keyterms'].split(',') if word.strip()]
-        return words, keywords
+        _, result = self.loop.run_until_complete(self.__send_request(text))
+        return [word.strip() for word in result if word.strip()]
