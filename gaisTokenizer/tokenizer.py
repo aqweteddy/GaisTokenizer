@@ -25,8 +25,8 @@ class Tokenizer:
             async with session.get(url) as resp:
                 js = await resp.json()
         except Exception as e:
-            print(resp.status)
-            # traceback.print_exc()
+            # print(resp.status)
+            traceback.print_exc()
             return None
         
         return js
